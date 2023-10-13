@@ -10,7 +10,7 @@ const Main = () => {
             <span className="text-[rgb(92,28,29)] dark:text-[rgb(228,89,89)]">
               UMassenger
             </span>
-            , Connect our students together{' '}
+            , Connect students together{' '}
           </h1>
           <h1 className="py-10 text-gray-700 dark:text-white">
             This is a project based on CS520 <br />
