@@ -4,6 +4,7 @@ import React from 'react';
 import { Icons } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { useForm } from 'react-hook-form';
+import { useUserService } from 'utils';
 import {
   Card,
   CardContent,
@@ -16,12 +17,21 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
 export default function Register() {
+  const userService = useUserService();
+
+  // get functions to build form with useForm() hook
   const { register, getValues, handleSubmit, formState, clearErrors } =
     useForm();
   const { errors } = formState;
 
   const fields = {
-    email: register('email', { required: 'Email is required thus' }),
+    email: register('email', {
+      required: 'Email is required',
+      pattern: {
+        value: /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}$/,
+        message: 'Invalid email address',
+      },
+    }),
     password: register('password', {
       required: 'Password is required',
       minLength: {
@@ -53,10 +63,7 @@ export default function Register() {
   };
 
   async function onSubmit(user: any) {
-    if (user.password !== user.confirmPassword) {
-      console.log('Password must be the same.');
-    }
-    await console.log('Form data submitted:', user);
+    await userService.register(user);
   }
 
   return (
@@ -90,10 +97,13 @@ export default function Register() {
               <Label htmlFor="email">Email</Label>
               <Input
                 {...fields.email}
-                type="email"
+                type="text"
                 placeholder="ID@umass.edu"
                 onChange={() => clearErrors()}
               />
+              <div className="text-red-700 font-bold">
+                {errors.email?.message?.toString()}
+              </div>
             </div>
             <div className="grid gap-2">
               <Label htmlFor="password">Password</Label>
@@ -119,9 +129,13 @@ export default function Register() {
             </div>
             <Button
               type="submit"
+              disabled={formState.isSubmitting}
               className="mx-auto place-self-center w-1/2"
               variant={'umass'}
             >
+              {formState.isSubmitting && (
+                <span className="spinner-border spinner-border-sm me-1"></span>
+              )}
               Create account
             </Button>
           </CardContent>
