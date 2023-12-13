@@ -1,6 +1,9 @@
+## [Demo](https://www.youtube.com/watch?v=_XTjmvEA4iw&t=1s&ab_channel=BoddyShen)
+
 # development
 
 - refer to [wiki](https://github.com/xyw0025/CS520_group_project/wiki) for git flow
+
 
 ### Setting Up and Running the Development Environment
 
