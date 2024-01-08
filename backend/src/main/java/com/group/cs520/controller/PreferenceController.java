@@ -21,7 +21,7 @@ import com.group.cs520.service.PreferenceService;
 
 @RestController
 @RequestMapping("/api/v1/preference")
-public class PrefrenceController implements PreferenceApi {
+public class PreferenceController implements PreferenceApi {
 
     @Autowired
     PreferenceService preferenceService;
