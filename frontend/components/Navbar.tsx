@@ -81,7 +81,7 @@ const Navbar = () => {
                 </li>
               </>
             )}
-            <ModeToggle />
+            {/* <ModeToggle /> */}
           </ul>
         </div>
       </div>
