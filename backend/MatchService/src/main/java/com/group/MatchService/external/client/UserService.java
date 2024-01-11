@@ -5,10 +5,10 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient(name = "ACCOUNT_SERVICE/")
+@FeignClient(name = "ACCOUNT-SERVICE")
 public interface UserService {
 
-    @PostMapping("/match")
+    @PostMapping("/api/v1/users/match")
     void createMatch(@RequestBody MatchCreateRequest request);
 
 }

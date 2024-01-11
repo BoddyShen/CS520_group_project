@@ -8,11 +8,11 @@ import com.group.ChatService.model.User;
 
 import java.util.List;
 
-@FeignClient(name="MATCH_SERVICE/api/v1/match")
+@FeignClient(name="MATCH-SERVICE")
 public interface MatchService {
 
 
-    @GetMapping("/get-all-matched-users-service/{id}")
+    @GetMapping("/api/v1/match/get-all-matched-users-service/{id}")
     List<User> getMatchedUsersService(@PathVariable String id);
 
 }

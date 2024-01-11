@@ -12,12 +12,12 @@ spring:
       credentials:
         location: classpath:quick-replica-key.json
   application:
-    name: MATCH_SERVICE
+    name: MATCH-SERVICE
   config:
     import: configserver:http://localhost:9296
 
 server:
-  port: 8080
+  port: 8083
 
 jwt:
   secret: ${env.JWT_SECRET}

@@ -12,12 +12,12 @@ spring:
       credentials:
         location: classpath:quick-replica-key.json
   application:
-    name: ACCOUNT_SERVICE
+    name: ACCOUNT-SERVICE
   config:
     import: configserver:http://localhost:9296
 
 server:
-  port: 3000
+  port: 8082
 
 jwt:
   secret: ${env.JWT_SECRET}

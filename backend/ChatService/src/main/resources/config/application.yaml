@@ -12,7 +12,7 @@ spring:
       credentials:
         location: classpath:quick-replica-key.json
   application:
-    name: CHAT_SERVICE
+    name: CHAT-SERVICE
   config:
     import: configserver:http://localhost:9296
 

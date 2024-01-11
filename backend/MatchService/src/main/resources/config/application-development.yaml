@@ -1,8 +1,0 @@
-spring:
-  data:
-    mongodb:
-      database: ${env.STAGING_MONGO_DATABASE}
-      uri: mongodb+srv://${env.STAGING_MONGO_USER}:${env.STAGING_MONGO_PASSWORD}@${env.STAGING_MONGO_CLUSTER}
-
-server:
-  port: 8080
