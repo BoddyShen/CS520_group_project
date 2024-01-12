@@ -6,6 +6,7 @@ import com.group.AccountService.model.MatchCreateRequest;
 import com.group.AccountService.service.UserService;
 import com.group.AccountService.service.ProfileService;
 import com.group.AccountService.service.GCPStorageService;
+import com.group.AccountService.repository.UserRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Collections;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -34,6 +36,9 @@ public class UserController implements UserApi {
 
     @Autowired
     private GCPStorageService gcpStorageService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     /**
      * Retrieves all users.
@@ -179,12 +184,6 @@ public class UserController implements UserApi {
         return ResponseEntity.ok(user);
     }
 
-//    @GetMapping("/random")
-//    public List<User> suggestRandomMatches(){
-//        List<User> recommendedUsers = userService.getRandomUsers(5);
-//        return recommendedUsers;
-//    }
-
     @GetMapping("/{id}/fetch-random-5-unmatched")
     public List<User> suggestRandomFiveUnmatchedUsers(@PathVariable String id) {
         List<User> recommendedUsers = userService.getRandomUsers(5, id);
@@ -209,5 +208,15 @@ public class UserController implements UserApi {
         userService.addMatch(request.getUserId(), request.getMatch());
     }
 
+    // GET API to fetch users by a list of IDs
+    @PostMapping("/by-ids")
+    public List<User> getUsersByIds(@RequestBody List<String> ids) {
+        System.out.println(ids);
+        List<ObjectId> objectIdList = ids.stream()
+                .map(ObjectId::new)
+                .collect(Collectors.toList());
+
+        return userRepository.findAllById(objectIdList);
+    }
 
 }

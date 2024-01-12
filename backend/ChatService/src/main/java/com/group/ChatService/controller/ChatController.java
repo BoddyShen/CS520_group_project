@@ -4,11 +4,14 @@ import com.group.ChatService.external.client.UserService;
 import com.group.ChatService.model.User;
 import com.group.ChatService.model.Message;
 import com.group.ChatService.model.UserWithConversationData;
+import com.group.ChatService.model.Conversation;
 import com.group.ChatService.service.ChatService;
 import com.group.ChatService.repository.MessageRepository;
+import com.group.ChatService.repository.ConversationRepository;
 import com.group.ChatService.service.TypeUtil;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -26,6 +29,9 @@ public class ChatController {
 
     @Autowired
     private MessageRepository messageRepository;
+
+    @Autowired
+    private ConversationRepository conversationRepository;
 
     @Autowired
     private ChatService chatService;
@@ -78,5 +84,24 @@ public class ChatController {
         List<UserWithConversationData> userWithConversationData = chatService.getMatchedUsersWithConversationData(id);
         return ResponseEntity.ok(userWithConversationData);
     }
+
+    @PostMapping("/create-conversation-service")
+    public ResponseEntity<Void> createConversation(@RequestBody List<String> userIds) {
+        if (userIds == null || userIds.size() != 2) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        try {
+            ObjectId user1Id = new ObjectId(userIds.get(0));
+            ObjectId user2Id = new ObjectId(userIds.get(1));
+            Conversation newConversation = new Conversation(user1Id, user2Id);
+            Conversation savedConversation = conversationRepository.save(newConversation);
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        } catch (Exception e) {
+            // Log the exception details
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
 
 }

@@ -100,7 +100,7 @@ function useUserService(): IUserService {
     getMatchedUsers: async (id) => {
       if (currentUser) {
         const userWithConversationData = await fetch.get(
-          `${API_URL}/api/v1/match/get-all-matched-users/${id}`
+          `${API_URL}/api/v1/conversation/get-matched-users-with-conversation-data-service/${id}`
         );
         userStore.setState((state) => ({
           ...state,

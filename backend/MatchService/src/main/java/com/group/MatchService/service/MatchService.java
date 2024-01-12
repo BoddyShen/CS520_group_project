@@ -6,23 +6,18 @@ import java.util.Map;
 import java.util.Optional;
 
 
+import com.group.MatchService.external.client.ChatService;
 import com.group.MatchService.external.client.UserService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.group.MatchService.constants.MatchConstants;
-import com.group.MatchService.model.User;
 import com.group.MatchService.model.Match;
 import com.group.MatchService.model.MatchHistory;
-import com.group.MatchService.model.Conversation;
 import com.group.MatchService.model.MatchCreateRequest;
-import com.group.MatchService.repository.UserRepository;
 import com.group.MatchService.repository.MatchRepository;
 import com.group.MatchService.repository.MatchHistoryRepository;
-import com.group.MatchService.repository.ConversationRepository;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.stream.Collectors;
@@ -31,8 +26,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class MatchService {
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private MatchRepository matchRepository;
@@ -41,10 +34,10 @@ public class MatchService {
     private MatchHistoryRepository matchHistoryRepository;
 
     @Autowired
-    private ConversationRepository conversationRepository;
+    private UserService userService;
 
     @Autowired
-    private UserService userService;
+    private ChatService chatService;
 
     public List<Match> allMatches() {
         return matchRepository.findAll();
@@ -75,7 +68,7 @@ public class MatchService {
 
     private Optional<Match> matchByUserIds(List<ObjectId> userIds) {
         Optional<Match> match = matchRepository.findByUserIds(userIds);
-        if (!match.isPresent()) {
+        if (match.isEmpty()) {
             Collections.reverse(userIds);
             match = matchRepository.findByUserIds(userIds);
         }
@@ -131,7 +124,11 @@ public class MatchService {
 
         if (acceptCount == 2) {
             match.setStatus(MatchConstants.STATUS.MATCHED.ordinal());
-            createConversation(match.getUserIds());
+            List<ObjectId> UserIdsObjectIdList = match.getUserIds();
+            List<String> UserIdsStringList = UserIdsObjectIdList.stream()
+                    .map(ObjectId::toString).toList();
+
+            chatService.createConversation(UserIdsStringList);
         } else if (rejectCount == 2) {
             match.setStatus(MatchConstants.STATUS.FAILED.ordinal());
         } else {
@@ -139,25 +136,26 @@ public class MatchService {
         }
     }
 
-    private void createConversation(List<ObjectId> userIds) {
-        if (userIds.size() >= 2) {
-            Conversation newConversation = new Conversation(userIds.get(0), userIds.get(1));
-            conversationRepository.save(newConversation);
-        }
-    }
+//    private void createConversation(List<ObjectId> userIds) {
+//        if (userIds.size() >= 2) {
+//            Conversation newConversation = new Conversation(userIds.get(0), userIds.get(1));
+//            conversationRepository.save(newConversation);
+//        }
+//    }
 
-    public List<User> getMatchedUsers(ObjectId userId) {
+    public List<String> getMatchedUsersId(ObjectId userId) {
         // Find matchings where status is 1 and userIds array contains the provided userId
         List<Match> matches = matchRepository.findByStatusAndUserIdsContaining(1, userId);
-
+        System.out.println("matches" + matches);
         // Extract the userIds and remove the provided userId
-        List<ObjectId> matchedUserIds = matches.stream()
+        List<String> matchedUserIds = matches.stream()
                 .flatMap(match -> match.getUserIds().stream())
                 .distinct()
                 .filter(ids -> !ids.equals(userId))
+                .map(ObjectId::toString)
                 .collect(Collectors.toList());
 
-        // Find all users that match the userIds
-        return userRepository.findAllById(matchedUserIds);
+        System.out.println("matchedUserIds" + matchedUserIds);
+        return matchedUserIds;
     }
 }

@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import com.group.MatchService.documentation.MatchApi;
 import com.group.MatchService.model.Match;
-import com.group.MatchService.model.User;
-import com.group.MatchService.model.UserWithConversationData;
 import com.group.MatchService.service.MatchService;
 import com.group.MatchService.service.TypeUtil;
 
@@ -67,15 +65,16 @@ public class MatchController implements MatchApi {
         }
     }
 
-    @GetMapping("/get-all-matched-users/{id}")
-    public ResponseEntity<List<UserWithConversationData>> getMatchedUsers(@PathVariable String id) {
-        List<UserWithConversationData> userWithConversationData = chatService.getMatchedUsersWithConversationData(id);
-        return ResponseEntity.ok(userWithConversationData);
-    }
+//    @GetMapping("/get-all-matched-users/{id}")
+//    public ResponseEntity<List<UserWithConversationData>> getMatchedUsers(@PathVariable String id) {
+//        List<UserWithConversationData> userWithConversationData = chatService.getMatchedUsersWithConversationData(id);
+//        return ResponseEntity.ok(userWithConversationData);
+//    }
 
-    @GetMapping("/get-all-matched-users-service/{id}")
-    public ResponseEntity<List<User>> getMatchedUsersService(@PathVariable String id) {
+    @GetMapping("/get-all-matched-users-ids/{id}")
+    public ResponseEntity<List<String>> getMatchedUsersId(@PathVariable String id) {
+        System.out.println(id);
         ObjectId userId = TypeUtil.objectIdConverter(id);
-        return ResponseEntity.ok(matchService.getMatchedUsers(userId));
+        return ResponseEntity.ok(matchService.getMatchedUsersId(userId));
     }
 }

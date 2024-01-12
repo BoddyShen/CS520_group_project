@@ -1,6 +1,7 @@
 package com.group.ChatService.service;
 
 import com.group.ChatService.external.client.MatchService;
+import com.group.ChatService.external.client.UserService;
 import com.group.ChatService.model.User;
 import com.group.ChatService.model.Conversation;
 import com.group.ChatService.model.Message;
@@ -18,6 +19,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class ChatService {
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private MatchService matchService;
@@ -66,7 +69,10 @@ public class ChatService {
 
     public List<UserWithConversationData> getMatchedUsersWithConversationData(String id) {
 
-        List<User> matchedUsers = matchService.getMatchedUsersService(id);
+        List<String> matchedUsersIds = matchService.getMatchedUsersId(id);
+        System.out.println(matchedUsersIds);
+        List<User> matchedUsers = userService.getUsersByIds(matchedUsersIds);
+        System.out.println(matchedUsers);
         ObjectId userId =  TypeUtil.objectIdConverter(id);
 
         return matchedUsers.stream()
