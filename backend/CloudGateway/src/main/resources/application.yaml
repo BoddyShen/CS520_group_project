@@ -1,6 +1,10 @@
 server:
   port: 3000
 
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+
 spring:
   application:
     name: API-GATEWAY
@@ -8,6 +12,18 @@ spring:
     import: configserver:http://localhost:9296
   cloud:
     gateway:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_UNIQUE
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "http://localhost:3001"
+            allowedMethods:
+              - "*"
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
       routes:
         - id : ACCOUNT-SERVICE
           uri: lb://ACCOUNT-SERVICE
@@ -22,5 +38,5 @@ spring:
         - id: CHAT-SERVICE
           uri: lb://CHAT-SERVICE
           predicates:
-            - Path=/api/v1/conversation/**
+            - Path=/api/v1/conversation/**, /chat/**
 
