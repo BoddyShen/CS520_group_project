@@ -133,6 +133,7 @@ public class MatchService {
                     .map(ObjectId::toString).toList();
 
             chatService.createConversation(UserIdsStringList);
+            redisService.publishMatchUpdate(UserIdsStringList.get(0), UserIdsStringList.get(1));
         } else if (rejectCount == 2) {
             match.setStatus(MatchConstants.STATUS.FAILED.ordinal());
         } else {
@@ -140,12 +141,6 @@ public class MatchService {
         }
     }
 
-//    private void createConversation(List<ObjectId> userIds) {
-//        if (userIds.size() >= 2) {
-//            Conversation newConversation = new Conversation(userIds.get(0), userIds.get(1));
-//            conversationRepository.save(newConversation);
-//        }
-//    }
 
     public List<String> getMatchedUsersId(ObjectId userId) {
 

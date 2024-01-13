@@ -36,4 +36,15 @@ public class RedisService {
 
         return listOps.range(cacheKey, 0, size - 1);
     }
+
+    public void publishMatchUpdate(String userId, String matchedUserId) {
+        String userChannel_1 = "user_channel:" + userId;
+        String message_1 = "New match with userId: " + matchedUserId;
+        stringRedisTemplate.convertAndSend(userChannel_1, message_1);
+
+        String userChannel_2 = "user_channel:" + matchedUserId;
+        String message_2 = "New match with userId: " + userId;
+        stringRedisTemplate.convertAndSend(userChannel_2, message_2);
+
+    }
 }
