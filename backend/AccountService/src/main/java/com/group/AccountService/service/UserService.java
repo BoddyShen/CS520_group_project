@@ -3,6 +3,7 @@ package com.group.AccountService.service;
 import com.group.AccountService.model.Profile;
 import com.group.AccountService.model.User;
 import com.group.AccountService.model.Match;
+import com.group.AccountService.service.RedisService;
 import com.group.AccountService.repository.MatchRepository;
 import com.group.AccountService.repository.UserRepository;
 import com.group.AccountService.repository.ProfileRepository;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 
 import java.time.Instant;
 import java.util.List;
@@ -40,6 +42,9 @@ public class UserService {
 
     @Autowired
     private ProfileRepository profileRepository;
+
+    @Autowired
+    private RedisService redisService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -115,12 +120,22 @@ public class UserService {
      * @throws IllegalArgumentException if the user is not found or the JWT token is invalid
      */
     public User validateUser(String token) {
-        try {
-            String email = jwtUtil.extractUserId(token);
+        String email = redisService.getUserEmailByToken(token);
+        if (email != null) {
             return userRepository.findUserByEmail(email)
                     .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        } catch (JWTVerificationException e) {
-            throw new IllegalArgumentException("Invalid JWT token");
+        } else {
+            try {
+                email = jwtUtil.extractUserId(token);
+                User user = userRepository.findUserByEmail(email)
+                        .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+                redisService.cacheUserToken(token, email);
+
+                return user;
+            } catch (JWTVerificationException e) {
+                throw new IllegalArgumentException("Invalid JWT token");
+            }
         }
     }
 
