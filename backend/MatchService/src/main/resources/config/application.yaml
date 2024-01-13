@@ -1,0 +1,35 @@
+spring:
+  data:
+    mongodb:
+      database: ${env.STAGING_MONGO_DATABASE}
+      uri: mongodb+srv://${env.STAGING_MONGO_USER}:${env.STAGING_MONGO_PASSWORD}@${env.STAGING_MONGO_CLUSTER}
+  cloud:
+    gcp:
+      storage:
+        bucket:
+          name: ${env.GCP_STORAGE_BUCKET_NAME}
+        project-id: ${env.GCP_STORAGE_PROJECT_ID}
+      credentials:
+        location: classpath:quick-replica-key.json
+  application:
+    name: MATCH-SERVICE
+  config:
+    import: configserver:http://localhost:9296
+
+server:
+  port: 8083
+
+jwt:
+  secret: ${env.JWT_SECRET}
+
+gcp:
+  url: ${env.GCP_STORAGE_URL}
+
+#eureka:
+#  instance:
+#    prefer-ip-address: true
+#  client:
+#    fetch-registry: true
+#    registry-with-eureka: true
+#    service-url:
+#      defaultZone: ${EUREKA_SERVER_ADDRESS:http://localhost:8761/eureka}

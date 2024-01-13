@@ -1,0 +1,38 @@
+server:
+  port: 3000
+
+spring:
+  application:
+    name: API-GATEWAY
+  config:
+    import: configserver:http://localhost:9296
+  cloud:
+    gateway:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_UNIQUE
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "http://localhost:3001"
+            allowedMethods:
+              - "*"
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
+      routes:
+        - id : ACCOUNT-SERVICE
+          uri: lb://ACCOUNT-SERVICE
+          predicates:
+            - Path=/api/v1/users/**, /api/v1/profile/**, /api/v1/preference/**
+
+        - id: MATCH-SERVICE
+          uri: lb://MATCH-SERVICE
+          predicates:
+            - Path=/api/v1/match/**
+
+        - id: CHAT-SERVICE
+          uri: lb://CHAT-SERVICE
+          predicates:
+            - Path=/api/v1/conversation/**, /chat/**
+
