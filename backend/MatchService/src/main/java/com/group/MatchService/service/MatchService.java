@@ -16,6 +16,7 @@ import com.group.MatchService.constants.MatchConstants;
 import com.group.MatchService.model.Match;
 import com.group.MatchService.model.MatchHistory;
 import com.group.MatchService.model.MatchCreateRequest;
+import com.group.MatchService.service.RedisService;
 import com.group.MatchService.repository.MatchRepository;
 import com.group.MatchService.repository.MatchHistoryRepository;
 import java.util.ArrayList;
@@ -38,6 +39,9 @@ public class MatchService {
 
     @Autowired
     private ChatService chatService;
+
+    @Autowired
+    private RedisService redisService;
 
     public List<Match> allMatches() {
         return matchRepository.findAll();
@@ -129,6 +133,7 @@ public class MatchService {
                     .map(ObjectId::toString).toList();
 
             chatService.createConversation(UserIdsStringList);
+            redisService.publishMatchUpdate(UserIdsStringList.get(0), UserIdsStringList.get(1));
         } else if (rejectCount == 2) {
             match.setStatus(MatchConstants.STATUS.FAILED.ordinal());
         } else {
@@ -136,26 +141,29 @@ public class MatchService {
         }
     }
 
-//    private void createConversation(List<ObjectId> userIds) {
-//        if (userIds.size() >= 2) {
-//            Conversation newConversation = new Conversation(userIds.get(0), userIds.get(1));
-//            conversationRepository.save(newConversation);
-//        }
-//    }
 
     public List<String> getMatchedUsersId(ObjectId userId) {
-        // Find matchings where status is 1 and userIds array contains the provided userId
-        List<Match> matches = matchRepository.findByStatusAndUserIdsContaining(1, userId);
-        System.out.println("matches" + matches);
-        // Extract the userIds and remove the provided userId
-        List<String> matchedUserIds = matches.stream()
-                .flatMap(match -> match.getUserIds().stream())
-                .distinct()
-                .filter(ids -> !ids.equals(userId))
-                .map(ObjectId::toString)
-                .collect(Collectors.toList());
 
-        System.out.println("matchedUserIds" + matchedUserIds);
+        String userIdString = userId.toString();
+        List<String> matchedUserIds = redisService.getMatchedUsersIdFromCache(userIdString);
+
+        // Check if the cache returned any data
+        if (matchedUserIds == null || matchedUserIds.isEmpty()) {
+            // If not, retrieve from database
+            List<Match> matches = matchRepository.findByStatusAndUserIdsContaining(1, userId);
+
+            // Extract the userIds and remove the provided userId
+            matchedUserIds = matches.stream()
+                    .flatMap(match -> match.getUserIds().stream())
+                    .distinct()
+                    .filter(ids -> !ids.equals(userId))
+                    .map(ObjectId::toString)
+                    .collect(Collectors.toList());
+
+            // Cache the retrieved data
+            redisService.cacheMatchedUsersIds(userIdString, matchedUserIds);
+        }
+
         return matchedUserIds;
     }
 }

@@ -3,6 +3,9 @@ spring:
     mongodb:
       database: ${env.STAGING_MONGO_DATABASE}
       uri: mongodb+srv://${env.STAGING_MONGO_USER}:${env.STAGING_MONGO_PASSWORD}@${env.STAGING_MONGO_CLUSTER}
+  redis:
+    host: localhost
+    port: 6379
   cloud:
     gcp:
       storage:
