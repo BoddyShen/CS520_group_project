@@ -17,7 +17,7 @@ spring:
   application:
     name: ACCOUNT-SERVICE
   config:
-    import: configserver:http://localhost:9296
+    import: configserver:http://${CONFIG_SERVER_URL:localhost}:9296
 
 server:
   port: 8082
