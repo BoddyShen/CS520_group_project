@@ -28,6 +28,49 @@ spec:
                 configMapKeyRef:
                   name: eureka-cm
                   key: eureka_service_address
+            # mongodb
+            - name: STAGING_MONGO_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: mongodb-config
+                  key: mongo_database
+            - name: STAGING_MONGO_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-secret
+                  key: mongo_user
+            - name: STAGING_MONGO_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-secret
+                  key: mongo_password
+            # gcp
+            - name: GCP_STORAGE_BUCKET_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: gcp-config
+                  key: bucket_name
+            - name: GCP_STORAGE_PROJECT_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: gcp-config
+                  key: project_id
+            - name: GCP_STORAGE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: mongo-secret
+                  key: storage_url
+            - name: GCP_CREDENTIALS
+              valueFrom:
+                secretKeyRef:
+                  name: gcp-secret
+                  key: credentials
+            # jwt
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: jwt_secret
 
 ---
 apiVersion: v1

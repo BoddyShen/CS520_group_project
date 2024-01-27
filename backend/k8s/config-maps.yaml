@@ -12,3 +12,21 @@ metadata:
   name: config-cm
 data:
   config_url: 'http://config-server-svc'
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mongodb-config
+data:
+  mongo_database: 'Umassenger-api-db'
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gcp-config
+data:
+  bucket_name: umassenger_api_development
+  project_id: even-gear-394603
+  storage_url: 'https://storage.googleapis.com/'

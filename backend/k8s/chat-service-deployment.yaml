@@ -28,6 +28,28 @@ spec:
                 configMapKeyRef:
                   name: eureka-cm
                   key: eureka_service_address
+            # mongodb
+            - name: STAGING_MONGO_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: mongodb-config
+                  key: mongo_database
+            - name: STAGING_MONGO_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-secret
+                  key: mongo_user
+            - name: STAGING_MONGO_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-secret
+                  key: mongo_password
+            # jwt
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: jwt_secret
 
 ---
 apiVersion: v1
