@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: match-service-app
+spec:
+  selector:
+    matchLabels:
+      app: match-service-app
+  template:
+    metadata:
+      labels:
+        app: match-service-app
+    spec:
+      containers:
+        - name: match-service-app
+          image: pohengshen96/matchservice
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8083
+          env:
+            - name: CONFIG_SERVER_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: config-cm
+                  key: config_url
+            - name: EUREKA_SERVER_ADDRESS
+              valueFrom:
+                configMapKeyRef:
+                  name: eureka-cm
+                  key: eureka_service_address
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: chat-service-svc
+spec:
+  selector:
+    app: chat-service-app
+  ports:
+    - port: 80
+      targetPort: 8083
