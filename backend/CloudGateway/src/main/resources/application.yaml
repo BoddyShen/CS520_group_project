@@ -5,7 +5,7 @@ spring:
   application:
     name: API-GATEWAY
   config:
-    import: configserver:http://${CONFIG_SERVER_URL:localhost}:9296
+    import: configserver:${CONFIG_SERVER_URL:http://localhost:9296}
   cloud:
     gateway:
       default-filters:
@@ -14,14 +14,14 @@ spring:
         corsConfigurations:
           '[/**]':
             allowedOrigins:
-              - "http://localhost:3001"
+              - 'http://localhost:3001'
             allowedMethods:
-              - "*"
+              - '*'
             allowedHeaders:
-              - "*"
+              - '*'
             allowCredentials: true
       routes:
-        - id : ACCOUNT-SERVICE
+        - id: ACCOUNT-SERVICE
           uri: lb://ACCOUNT-SERVICE
           predicates:
             - Path=/api/v1/users/**, /api/v1/profile/**, /api/v1/preference/**
@@ -35,4 +35,3 @@ spring:
           uri: lb://CHAT-SERVICE
           predicates:
             - Path=/api/v1/conversation/**, /chat/**
-
