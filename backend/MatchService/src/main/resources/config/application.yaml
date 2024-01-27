@@ -4,7 +4,7 @@ spring:
       database: ${env.STAGING_MONGO_DATABASE}
       uri: mongodb+srv://${env.STAGING_MONGO_USER}:${env.STAGING_MONGO_PASSWORD}@${env.STAGING_MONGO_CLUSTER}
   redis:
-    host: '${REDIS_URL:localhost}'
+    host: redis
     port: 6379
   cloud:
     gcp:
