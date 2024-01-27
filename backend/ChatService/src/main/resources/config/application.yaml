@@ -1,16 +1,8 @@
 spring:
   data:
     mongodb:
-      database: ${env.STAGING_MONGO_DATABASE}
-      uri: mongodb+srv://${env.STAGING_MONGO_USER}:${env.STAGING_MONGO_PASSWORD}@${env.STAGING_MONGO_CLUSTER}
-  cloud:
-    gcp:
-      storage:
-        bucket:
-          name: ${env.GCP_STORAGE_BUCKET_NAME}
-        project-id: ${env.GCP_STORAGE_PROJECT_ID}
-      credentials:
-        location: classpath:quick-replica-key.json
+      database: ${STAGING_MONGO_DATABASE:env.STAGING_MONGO_DATABASE}
+      uri: mongodb+srv://${STAGING_MONGO_USER:env.STAGING_MONGO_USER}:${STAGING_MONGO_PASSWORD:env.STAGING_MONGO_PASSWORD}@${STAGING_MONGO_CLUSTER:env.STAGING_MONGO_CLUSTER}
   application:
     name: CHAT-SERVICE
   config:
@@ -20,10 +12,7 @@ server:
   port: 8081
 
 jwt:
-  secret: ${env.JWT_SECRET}
-
-gcp:
-  url: ${env.GCP_STORAGE_URL}
+  secret: ${JWT_SECRET:env.JWT_SECRET}
 #eureka:
 #  instance:
 #    prefer-ip-address: true
