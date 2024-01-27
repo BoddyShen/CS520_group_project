@@ -20,6 +20,7 @@ metadata:
   name: mongodb-config
 data:
   mongo_database: 'Umassenger-api-db'
+  mongo_cluster: 'cluster0.x1sbumz.mongodb.net'
 
 ---
 apiVersion: v1

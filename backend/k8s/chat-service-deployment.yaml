@@ -34,6 +34,11 @@ spec:
                 configMapKeyRef:
                   name: mongodb-config
                   key: mongo_database
+            - name: STAGING_MONGO_CLUSTER
+              valueFrom:
+                configMapKeyRef:
+                  name: mongodb-config
+                  key: mongo_cluster
             - name: STAGING_MONGO_USER
               valueFrom:
                 secretKeyRef:
