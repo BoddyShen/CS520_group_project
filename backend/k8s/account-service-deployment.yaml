@@ -66,16 +66,23 @@ spec:
                   name: gcp-config
                   key: storage_url
             - name: GCP_CREDENTIALS
-              valueFrom:
-                secretKeyRef:
-                  name: gcp-secret
-                  key: credentials
+              value: '/etc/gcp/credentials.json'
+
             # jwt
             - name: JWT_SECRET
               valueFrom:
                 secretKeyRef:
                   name: jwt-secret
                   key: jwt_secret
+
+          volumeMounts:
+            - name: gcp-credentials-volume
+              mountPath: '/etc/gcp'
+              readOnly: true
+      volumes:
+        - name: gcp-credentials-volume
+          secret:
+            secretName: gcp-secret
 
 ---
 apiVersion: v1
