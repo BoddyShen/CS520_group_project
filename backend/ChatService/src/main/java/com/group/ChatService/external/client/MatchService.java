@@ -9,7 +9,7 @@ import com.group.ChatService.model.User;
 
 import java.util.List;
 
-@FeignClient(name="MATCH-SERVICE")
+@FeignClient(name="match-service-svc")
 public interface MatchService {
 
     @GetMapping("/api/v1/match/get-all-matched-users-ids/{id}")

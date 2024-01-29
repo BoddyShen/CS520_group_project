@@ -22,16 +22,16 @@ spring:
             allowCredentials: true
       routes:
         - id: ACCOUNT-SERVICE
-          uri: lb://ACCOUNT-SERVICE
+          uri: http://account-service-svc
           predicates:
             - Path=/api/v1/users/**, /api/v1/profile/**, /api/v1/preference/**
 
         - id: MATCH-SERVICE
-          uri: lb://MATCH-SERVICE
+          uri: http://match-service-svc
           predicates:
             - Path=/api/v1/match/**
 
         - id: CHAT-SERVICE
-          uri: lb://CHAT-SERVICE
+          uri: http://chat-service-svc
           predicates:
             - Path=/api/v1/conversation/**, /chat/**
