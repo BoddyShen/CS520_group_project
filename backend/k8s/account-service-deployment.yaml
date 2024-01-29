@@ -49,6 +49,12 @@ spec:
                 secretKeyRef:
                   name: mongo-secret
                   key: mongo_password
+            # redis
+            - name: REDIS_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: redis-config
+                  key: url
             # gcp
             - name: GCP_STORAGE_BUCKET_NAME
               valueFrom:

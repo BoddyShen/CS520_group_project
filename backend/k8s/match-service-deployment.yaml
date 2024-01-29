@@ -49,6 +49,12 @@ spec:
                 secretKeyRef:
                   name: mongo-secret
                   key: mongo_password
+            # redis
+            - name: REDIS_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: redis-config
+                  key: url
             # jwt
             - name: JWT_SECRET
               valueFrom:
@@ -60,10 +66,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: chat-service-svc
+  name: match-service-svc
 spec:
   selector:
-    app: chat-service-app
+    app: match-service-app
   ports:
     - port: 80
       targetPort: 8083

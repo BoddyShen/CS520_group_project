@@ -31,3 +31,11 @@ data:
   bucket_name: umassenger_api_development
   project_id: even-gear-394603
   storage_url: 'https://storage.googleapis.com/'
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: redis-config
+data:
+  url: 'redis-svc'
