@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@FeignClient(name = "account-service-svc")
+@FeignClient(name = "account", url = "http://account-service-svc")
 public interface UserService {
 
     @GetMapping("/api/v1/users/{id}")
