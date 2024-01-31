@@ -54,4 +54,4 @@ buildNumber.properties
 mvnw
 mvnw.cmd
 
-src/main/resources/*.json
+k8s/secret.yaml
