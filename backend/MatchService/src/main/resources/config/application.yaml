@@ -10,6 +10,10 @@ spring:
     name: MATCH-SERVICE
   config:
     import: configserver:${CONFIG_SERVER_URL:http://localhost:9296}
+  kafka:
+    bootstrap-servers: 34.125.100.102:9092
+    consumer:
+      group-id: GroupID3
 
 server:
   port: 8083

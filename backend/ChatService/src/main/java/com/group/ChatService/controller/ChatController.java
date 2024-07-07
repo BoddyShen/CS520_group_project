@@ -1,6 +1,6 @@
 package com.group.ChatService.controller;
 
-import com.group.ChatService.external.client.UserService;
+import com.group.ChatService.service.UserKafkaService;
 import com.group.ChatService.model.User;
 import com.group.ChatService.model.Message;
 import com.group.ChatService.model.UserWithConversationData;
@@ -19,6 +19,8 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.bson.types.ObjectId;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
 
 @RestController
 @RequestMapping("/api/v1/conversation")
@@ -37,7 +39,7 @@ public class ChatController {
     private ChatService chatService;
 
     @Autowired
-    private UserService userService;
+    private UserKafkaService userKafkaService;
 
     @MessageMapping("/room/{conversationId}/sendMessage")
     public Message sendMessage(@DestinationVariable String conversationId, @Payload Message chatMessage) {
@@ -72,10 +74,11 @@ public class ChatController {
     }
 
     @GetMapping("/chatting-room-user/{id}")
-    public ResponseEntity<UserWithConversationData> getSingleUser(@PathVariable String id) {
-        User user = userService.getSingleUser(id);
-        UserWithConversationData userWithConversationData = new UserWithConversationData(user);
-        return ResponseEntity.ok(userWithConversationData);
+    public CompletableFuture<ResponseEntity<?>> getSingleUser(@PathVariable String id) {
+        return userKafkaService.requestSingleUser(id)
+                .thenApply(user -> new UserWithConversationData(user))
+                .<ResponseEntity<?>>thenApply(ResponseEntity::ok)
+                .exceptionally(e -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage()));
     }
 
     @GetMapping("/get-matched-users-with-conversation-data-service/{id}")
